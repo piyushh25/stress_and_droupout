@@ -1,0 +1,28 @@
+# Caches and Pycache
+__pycache__/
+*.py[cod]
+*$py.class
+.webassets-cache
+.pytest_cache/
+.cache
+
+# Environments
+.env
+.venv
+venv/
+env/
+student_ml_env/
+
+# Node modules
+node_modules/
+
+# IDE files
+.vscode/
+.idea/
+
+# Archives and Zip files
+*.zip
+
+# OS temporary files
+.DS_Store
+Thumbs.db

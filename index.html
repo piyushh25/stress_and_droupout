@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress & Dropout Detector</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <h1>Stress & Dropout Detector</h1>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Side: Interactive Input Form -->
+            <section class="form-card card">
+                <div class="card-header">
+                    <h2>Student Risk Form</h2>
+                    <div class="quick-loads">
+                        <button type="button" class="btn btn-sm btn-outline" id="load-high-risk">High Risk Profile</button>
+                        <button type="button" class="btn btn-sm btn-outline" id="load-medium-risk">Mid Risk Profile</button>
+                        <button type="button" class="btn btn-sm btn-outline" id="load-model-student">Model Student Profile</button>
+                    </div>
+                </div>
+                
+                <form id="predictor-form">
+                    <!-- Section 1: Psychological & Wellbeing -->
+                    <div class="form-section">
+                        <h3>1. Mental Health & Well-being (Stress Model)</h3>
+                        <div class="form-group-grid">
+                            
+                            <div class="form-group">
+                                <label for="anxiety_level">How Anxious/Nervous do you feel?</label>
+                                <select id="anxiety_level" name="anxiety_level" required>
+                                    <option value="0">0 - Not at all calm & relaxed</option>
+                                    <option value="5">5 - Mildly anxious occasionally</option>
+                                    <option value="10" selected>10 - Moderately anxious / Worried</option>
+                                    <option value="15">15 - Highly anxious / Very tense</option>
+                                    <option value="21">21 - Extremely anxious / Frequent panic</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="depression">How is your Mood / Sadness level?</label>
+                                <select id="depression" name="depression" required>
+                                    <option value="0">0 - Happy & Positive mood</option>
+                                    <option value="5">5 - Mild sadness / Low energy</option>
+                                    <option value="8" selected>8 - Feeling down / Moderate sadness</option>
+                                    <option value="15">15 - Constant low mood / Severe sadness</option>
+                                    <option value="21">21 - Extreme distress / Chronic depression</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sleep_quality">How is your Sleep Quality?</label>
+                                <select id="sleep_quality" name="sleep_quality" required>
+                                    <option value="5">5 - Excellent (Restful, 8+ hrs)</option>
+                                    <option value="4">4 - Good (Restful, 7 hrs)</option>
+                                    <option value="3" selected>3 - Fair (Light sleep, 6 hrs)</option>
+                                    <option value="2">2 - Poor (Restless, 5 hrs)</option>
+                                    <option value="1">1 - Very Poor (Waking up, 4- hrs)</option>
+                                    <option value="0">0 - Insomnia / Barely sleep</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="study_load">How heavy is your Academic Study Load?</label>
+                                <select id="study_load" name="study_load" required>
+                                    <option value="0">0 - Very Light (No pressure)</option>
+                                    <option value="1">1 - Light (Easily manageable)</option>
+                                    <option value="2">2 - Moderate (Normal study hours)</option>
+                                    <option value="3" selected>3 - Heavy (Frequent assignments)</option>
+                                    <option value="4">4 - Very Heavy (Constantly studying)</option>
+                                    <option value="5">5 - Extreme (Overwhelmed / No free time)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="peer_pressure">How much Peer Pressure do you feel?</label>
+                                <select id="peer_pressure" name="peer_pressure" required>
+                                    <option value="0">0 - None (Supportive friend circle)</option>
+                                    <option value="1">1 - Very low</option>
+                                    <option value="2" selected>2 - Mild social pressure</option>
+                                    <option value="3">3 - Moderate pressure to fit in</option>
+                                    <option value="4">4 - High pressure from peers</option>
+                                    <option value="5">5 - Severe peer stress</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="academic_performance">Perceived Academic Rank (Self-rating)</label>
+                                <select id="academic_performance" name="academic_performance" required>
+                                    <option value="5">5 - Top Performer (Straight A's)</option>
+                                    <option value="4">4 - Above Average (B-Grade)</option>
+                                    <option value="3" selected>3 - Average (C-Grade)</option>
+                                    <option value="2">2 - Below Average (D-Grade)</option>
+                                    <option value="1">1 - Struggling / Failing (F-Grade)</option>
+                                    <option value="0">0 - Not attending classes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Engagement Logs -->
+                    <div class="form-section">
+                        <h3>2. Platform Engagement & Attendance (Burnout Model)</h3>
+                        <div class="form-group-grid">
+                            <div class="form-group">
+                                <label for="login_frequency">Weekly portal Logins (1-30)</label>
+                                <input type="number" id="login_frequency" name="login_frequency" min="1" max="30" value="12" required>
+                                <span class="input-desc">Typical range: 5 to 25 logins</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="quiz_attempts">Weekly Quiz Attempts (0-12)</label>
+                                <input type="number" id="quiz_attempts" name="quiz_attempts" min="0" max="12" value="4" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="assignment_submission_rate">Assignment Submissions (%)</label>
+                                <input type="number" id="assignment_submission_rate" name="assignment_submission_rate" min="0" max="100" value="85" required>
+                                <span class="input-desc">Percentage of completed work</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="absenteeism_rate">Class Absenteeism (%)</label>
+                                <input type="number" id="absenteeism_rate" name="absenteeism_rate" min="0" max="100" value="10" required>
+                                <span class="input-desc">Percentage of classes missed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Academic Records -->
+                    <div class="form-section">
+                        <h3>3. Academic Records & Background (Dropout Model)</h3>
+                        <div class="form-group-grid">
+                            <div class="form-group">
+                                <label for="Gender">Gender</label>
+                                <select id="Gender" name="Gender" required>
+                                    <option value="0" selected>Male</option>
+                                    <option value="1">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Age_at_enrollment">Age at Enrollment</label>
+                                <input type="number" id="Age_at_enrollment" name="Age at enrollment" min="17" max="65" value="20" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Scholarship_holder">Do you hold a Scholarship?</label>
+                                <select id="Scholarship_holder" name="Scholarship holder" required>
+                                    <option value="0" selected>No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Tuition_fees_up_to_date">Are Tuition Fees fully paid?</label>
+                                <select id="Tuition_fees_up_to_date" name="Tuition fees up to date" required>
+                                    <option value="1" selected>Yes, up to date</option>
+                                    <option value="0">No, in arrears (debtor)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Curricular_units_1st_sem_approved">Passed Courses in 1st Sem</label>
+                                <input type="number" id="Curricular_units_1st_sem_approved" name="Curricular units 1st sem (approved)" min="0" max="25" value="5" required>
+                                <span class="input-desc">Typical: 5 to 7 courses</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="Curricular_units_1st_sem_grade">Average Grade in 1st Sem</label>
+                                <select id="Curricular_units_1st_sem_grade" name="Curricular units 1st sem (grade)" required>
+                                    <option value="18">18-20 — Excellent (A+ / A)</option>
+                                    <option value="15">15-17 — Very Good (B+ / B)</option>
+                                    <option value="12" selected>12-14 — Good / Average (C+ / C)</option>
+                                    <option value="10">10-11 — Satisfactory / Pass (D)</option>
+                                    <option value="6">5-9 — Poor / Needs Improvement</option>
+                                    <option value="0">0-4 — Failed / Discontinued</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="btn-submit">
+                        Run Causal Prediction
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Side: Risk Assessment Panel -->
+            <section class="results-panel">
+                
+                <!-- Prediction Loading Overlay -->
+                <div class="loading-overlay" id="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Executing Unified Machine Learning Pipeline...</p>
+                </div>
+                
+                <!-- Causal Chain Visual Path -->
+                <div class="path-visual">
+                    <div class="path-step active" id="step-stress">
+                        <div class="step-num">1</div>
+                        <div class="step-label">Stress</div>
+                    </div>
+                    <div class="path-arrow">&rarr;</div>
+                    <div class="path-step" id="step-burnout">
+                        <div class="step-num">2</div>
+                        <div class="step-label">Burnout</div>
+                    </div>
+                    <div class="path-arrow">&rarr;</div>
+                    <div class="path-step" id="step-dropout">
+                        <div class="step-num">3</div>
+                        <div class="step-label">Dropout</div>
+                    </div>
+                </div>
+
+                <!-- 1. Stress Output Card -->
+                <div class="result-card card" id="stress-card">
+                    <div class="card-header-res">
+                        <div>
+                            <span class="step-badge">Stage 1</span>
+                            <h3>Student Stress Level</h3>
+                        </div>
+                        <span class="risk-badge" id="stress-status">PENDING</span>
+                    </div>
+                    <div class="card-body-res">
+                        <div class="meter-container">
+                            <div class="meter-bar">
+                                <div class="meter-fill" id="stress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="meter-labels">
+                                <span>High-Stress Probability:</span>
+                                <span id="stress-percentage">0%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Explainability subsection -->
+                        <div class="explanation-box">
+                            <h4>Top Contributing Factors (SHAP)</h4>
+                            <div class="shap-list" id="stress-shap-list">
+                                <div class="empty-state">Submit student details to run explainable analysis.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Burnout Output Card -->
+                <div class="result-card card" id="burnout-card">
+                    <div class="card-header-res">
+                        <div>
+                            <span class="step-badge">Stage 2</span>
+                            <h3>Academic Burnout Risk</h3>
+                        </div>
+                        <span class="risk-badge" id="burnout-status">PENDING</span>
+                    </div>
+                    <div class="card-body-res">
+                        <div class="meter-container">
+                            <div class="meter-bar">
+                                <div class="meter-fill" id="burnout-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="meter-labels">
+                                <span>Burnout Risk Probability:</span>
+                                <span id="burnout-percentage">0%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="explanation-box">
+                            <h4>Top Contributing Factors (SHAP)</h4>
+                            <div class="shap-list" id="burnout-shap-list">
+                                <div class="empty-state">Submit student details to run explainable analysis.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Dropout Output Card -->
+                <div class="result-card card" id="dropout-card">
+                    <div class="card-header-res">
+                        <div>
+                            <span class="step-badge">Stage 3</span>
+                            <h3>Academic Retention Prediction</h3>
+                        </div>
+                        <span class="risk-badge" id="dropout-status">PENDING</span>
+                    </div>
+                    <div class="card-body-res">
+                        <div class="dropout-probs-grid" id="dropout-probabilities">
+                            <!-- Populated dynamically -->
+                            <div class="prob-row">
+                                <span>Graduate:</span>
+                                <div class="mini-bar-container"><div class="mini-bar-fill" id="prob-grad-bar" style="width: 0%"></div></div>
+                                <span id="prob-grad-pct">0%</span>
+                            </div>
+                            <div class="prob-row">
+                                <span>Enrolled:</span>
+                                <div class="mini-bar-container"><div class="mini-bar-fill" id="prob-enroll-bar" style="width: 0%"></div></div>
+                                <span id="prob-enroll-pct">0%</span>
+                            </div>
+                            <div class="prob-row text-danger">
+                                <span>Dropout:</span>
+                                <div class="mini-bar-container"><div class="mini-bar-fill" id="prob-drop-bar" style="width: 0%"></div></div>
+                                <span id="prob-drop-pct">0%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="explanation-box">
+                            <h4>Top Contributing Factors (SHAP)</h4>
+                            <div class="shap-list" id="dropout-shap-list">
+                                <div class="empty-state">Submit student details to run explainable analysis.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+        
+
+    </div>
+
+    <!-- Script -->
+    <script src="static/script.js"></script>
+</body>
+</html>
